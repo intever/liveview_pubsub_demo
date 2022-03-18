@@ -18,6 +18,18 @@ defmodule LiveviewPubsubDemoWeb.Router do
   end
 
   scope "/", LiveviewPubsubDemoWeb do
+    # pipe_through [:browser, :require_authenticated_user]
+    pipe_through :browser
+
+    live "/user_phone_number", UserPhoneNumberLive.Index, :index
+    live "/user_phone_number/new", UserPhoneNumberLive.Index, :new
+    live "/user_phone_number/:id/edit", UserPhoneNumberLive.Index, :edit
+
+    live "/user_phone_number/:id", UserPhoneNumberLive.Show, :show
+    live "/user_phone_number/:id/show/edit", UserPhoneNumberLive.Show, :edit
+  end
+
+  scope "/", LiveviewPubsubDemoWeb do
     pipe_through :browser
 
     get "/", PageController, :index

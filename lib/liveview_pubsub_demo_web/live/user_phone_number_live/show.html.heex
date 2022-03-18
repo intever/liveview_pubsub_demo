@@ -1,0 +1,26 @@
+<h1>Show User phone number</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.user_phone_number_show_path(@socket, :show, @user_phone_number)}>
+    <.live_component
+      module={LiveviewPubsubDemoWeb.UserPhoneNumberLive.FormComponent}
+      id={@user_phone_number.id}
+      title={@page_title}
+      action={@live_action}
+      user_phone_number={@user_phone_number}
+      return_to={Routes.user_phone_number_show_path(@socket, :show, @user_phone_number)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Phone number:</strong>
+    <%= @user_phone_number.phone_number %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.user_phone_number_show_path(@socket, :edit, @user_phone_number), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.user_phone_number_index_path(@socket, :index) %></span>
