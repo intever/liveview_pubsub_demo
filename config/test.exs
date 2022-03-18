@@ -6,8 +6,8 @@ import Config
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :liveview_pubsub_demo, LiveviewPubsubDemo.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: System.get_env("ECTO_PGSQL_USER"),
+  password: System.get_env("ECTO_PGSQL_PASSWORD"),
   hostname: "localhost",
   database: "liveview_pubsub_demo_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,

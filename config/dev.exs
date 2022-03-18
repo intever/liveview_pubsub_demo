@@ -2,8 +2,8 @@ import Config
 
 # Configure your database
 config :liveview_pubsub_demo, LiveviewPubsubDemo.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: System.get_env("ECTO_PGSQL_USER"),
+  password: System.get_env("ECTO_PGSQL_PASSWORD"),
   hostname: "localhost",
   database: "liveview_pubsub_demo_dev",
   show_sensitive_data_on_connection_error: true,
