@@ -4,6 +4,8 @@ defmodule LiveviewPubsubDemoWeb.UserPhoneNumberLiveTest do
   import Phoenix.LiveViewTest
   import LiveviewPubsubDemo.ContactInfoFixtures
 
+  setup :register_and_log_in_user
+
   @create_attrs %{phone_number: "some phone_number"}
   @update_attrs %{phone_number: "some updated phone_number"}
   @invalid_attrs %{phone_number: nil}

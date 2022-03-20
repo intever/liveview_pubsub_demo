@@ -41,7 +41,7 @@ defmodule LiveviewPubsubDemoWeb.UserPhoneNumberLive.FormComponent do
   end
 
   defp save_user_phone_number(socket, :new, user_phone_number_params) do
-    case ContactInfo.create_user_phone_number(user_phone_number_params) do
+    case ContactInfo.create_user_phone_number(socket.assigns.user_phone_number, user_phone_number_params) do
       {:ok, _user_phone_number} ->
         {:noreply,
          socket

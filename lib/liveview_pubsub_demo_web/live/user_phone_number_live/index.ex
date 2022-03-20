@@ -23,7 +23,7 @@ defmodule LiveviewPubsubDemoWeb.UserPhoneNumberLive.Index do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New User phone number")
-    |> assign(:user_phone_number, %UserPhoneNumber{})
+    |> assign(:user_phone_number, %UserPhoneNumber{user_id: socket.assigns.current_user.id})
   end
 
   defp apply_action(socket, :index, _params) do
