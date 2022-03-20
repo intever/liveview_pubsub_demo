@@ -10,8 +10,8 @@ defmodule LiveviewPubsubDemoWeb.UserPhoneNumberLiveTest do
   @update_attrs %{phone_number: "some updated phone_number"}
   @invalid_attrs %{phone_number: nil}
 
-  defp create_user_phone_number(_) do
-    user_phone_number = user_phone_number_fixture()
+  defp create_user_phone_number(%{user: user}) do
+    user_phone_number = user_phone_number_fixture(%{user: user})
     %{user_phone_number: user_phone_number}
   end
 
@@ -23,6 +23,20 @@ defmodule LiveviewPubsubDemoWeb.UserPhoneNumberLiveTest do
 
       assert html =~ "Listing User phone number"
       assert html =~ user_phone_number.phone_number
+    end
+
+    test "handles 'user_phone_number.updated' event", %{conn: conn, user_phone_number: user_phone_number} do
+      {:ok, index_live, _html} = live(conn, Routes.user_phone_number_index_path(conn, :index))
+
+      refute has_element?(index_live, "td", "NEW_NUMBER")
+
+      assert {:ok, %LiveviewPubsubDemo.ContactInfo.UserPhoneNumber{} = _user_phone_number} =
+               LiveviewPubsubDemo.ContactInfo.update_user_phone_number(
+                 user_phone_number,
+                 %{phone_number: "NEW_NUMBER"}
+               )
+
+      assert has_element?(index_live, "td", "NEW_NUMBER")
     end
 
     test "saves new user_phone_number", %{conn: conn} do

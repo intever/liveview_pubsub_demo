@@ -6,6 +6,13 @@ defmodule LiveviewPubsubDemoWeb.UserPhoneNumberLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      [
+        "user-phone-number.*.user-id:#{socket.assigns.current_user.id}",
+      ]
+      |> Enum.each(&Phoenix.PubSub.subscribe(LiveviewPubsubDemo.PubSub, &1))
+    end
+
     {:ok, assign(socket, :user_phone_number_collection, list_user_phone_number())}
   end
 
@@ -42,5 +49,17 @@ defmodule LiveviewPubsubDemoWeb.UserPhoneNumberLive.Index do
 
   defp list_user_phone_number do
     ContactInfo.list_user_phone_number()
+  end
+
+  @impl true
+  def handle_info(
+        %LiveviewPubsubDemo.Events.UserEvent{type: "user_phone_number.updated"} =
+          _user_event,
+        socket
+      ) do
+    socket = socket
+      |> assign(:user_phone_number_collection, list_user_phone_number())
+
+    {:noreply, socket}
   end
 end

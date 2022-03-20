@@ -12,7 +12,7 @@ defmodule LiveviewPubsubDemo.ContactInfoFixtures do
   Generate a user_phone_number.
   """
   def user_phone_number_fixture(attrs \\ %{}) do
-    user = user_fixture()
+    user = attrs[:user] || user_fixture()
 
     attrs = attrs
     |> Enum.into(%{
