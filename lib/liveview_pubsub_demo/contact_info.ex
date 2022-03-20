@@ -49,8 +49,8 @@ defmodule LiveviewPubsubDemo.ContactInfo do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user_phone_number(attrs \\ %{}) do
-    %UserPhoneNumber{}
+  def create_user_phone_number(%UserPhoneNumber{} = user_phone_number, attrs \\ %{}) do
+    user_phone_number
     |> UserPhoneNumber.changeset(attrs)
     |> Repo.insert()
   end

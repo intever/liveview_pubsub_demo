@@ -3,6 +3,11 @@ defmodule LiveviewPubsubDemo.ContactInfoTest do
 
   alias LiveviewPubsubDemo.ContactInfo
 
+  import LiveviewPubsubDemo.{
+    AccountsFixtures,
+    ContactInfoFixtures
+  }
+
   describe "user_phone_number" do
     alias LiveviewPubsubDemo.ContactInfo.UserPhoneNumber
 
@@ -20,15 +25,19 @@ defmodule LiveviewPubsubDemo.ContactInfoTest do
       assert ContactInfo.get_user_phone_number!(user_phone_number.id) == user_phone_number
     end
 
-    test "create_user_phone_number/1 with valid data creates a user_phone_number" do
+    test "create_user_phone_number/2 with valid data creates a user_phone_number" do
+      user = user_fixture()
+      user_phone_number = %UserPhoneNumber{user_id: user.id}
       valid_attrs = %{phone_number: "some phone_number"}
 
-      assert {:ok, %UserPhoneNumber{} = user_phone_number} = ContactInfo.create_user_phone_number(valid_attrs)
+      assert {:ok, %UserPhoneNumber{} = user_phone_number} = ContactInfo.create_user_phone_number(user_phone_number, valid_attrs)
+      assert user_phone_number.user_id == user.id
       assert user_phone_number.phone_number == "some phone_number"
     end
 
-    test "create_user_phone_number/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = ContactInfo.create_user_phone_number(@invalid_attrs)
+    test "create_user_phone_number/2 with invalid data returns error changeset" do
+      user_phone_number = %UserPhoneNumber{}
+      assert {:error, %Ecto.Changeset{}} = ContactInfo.create_user_phone_number(user_phone_number, @invalid_attrs)
     end
 
     test "update_user_phone_number/2 with valid data updates the user_phone_number" do

@@ -4,7 +4,8 @@ defmodule LiveviewPubsubDemo.ContactInfo.UserPhoneNumber do
 
   schema "user_phone_number" do
     field :phone_number, :string
-    field :user_id, :id
+
+    belongs_to :user, LiveviewPubsubDemo.Accounts.User
 
     timestamps()
   end
@@ -13,6 +14,6 @@ defmodule LiveviewPubsubDemo.ContactInfo.UserPhoneNumber do
   def changeset(user_phone_number, attrs) do
     user_phone_number
     |> cast(attrs, [:phone_number])
-    |> validate_required([:phone_number])
+    |> validate_required([:phone_number, :user_id])
   end
 end
