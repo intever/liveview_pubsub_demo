@@ -5,8 +5,10 @@ defmodule LiveviewPubsubDemo.ContactInfo do
 
   import Ecto.Query, warn: false
   alias LiveviewPubsubDemo.Repo
+  alias Ecto.Multi
 
   alias LiveviewPubsubDemo.ContactInfo.UserPhoneNumber
+  alias LiveviewPubsubDemo.Events
 
   @doc """
   Returns the list of user_phone_number.
@@ -68,9 +70,52 @@ defmodule LiveviewPubsubDemo.ContactInfo do
 
   """
   def update_user_phone_number(%UserPhoneNumber{} = user_phone_number, attrs) do
-    user_phone_number
-    |> UserPhoneNumber.changeset(attrs)
-    |> Repo.update()
+    result =
+      Multi.new()
+      |> multi_update_user_phone_number(:user_phone_number, user_phone_number, attrs)
+      |> Repo.transaction()
+
+    case result do
+      {:ok, %{user_phone_number: user_phone_number}} ->
+        {:ok, user_phone_number}
+
+      {:error, :user_phone_number, changeset, _changes} ->
+        {:error, changeset}
+    end
+  end
+
+  def multi_update_user_phone_number(
+        multi,
+        id,
+        %UserPhoneNumber{} = user_phone_number,
+        attrs \\ %{}
+      ) do
+    changeset = UserPhoneNumber.changeset(user_phone_number, attrs)
+
+    multi
+    |> Multi.update(id, changeset)
+    |> Multi.merge(fn changes ->
+      user_phone_number = changes[id]
+
+      Events.multi_create_user_event(
+        Multi.new(),
+        id,
+        %{
+          type: "user_phone_number.updated",
+          user_id: user_phone_number.user_id,
+          event_at: user_phone_number.updated_at,
+          data: Map.take(user_phone_number, [:id, :user_id, :phone_number])
+        },
+        [
+          "user-phone-number.updated.*",
+          "user-phone-number.updated.id:#{user_phone_number.id}",
+          "user-phone-number.updated.user-id:#{user_phone_number.user_id}",
+          "user-phone-number.*.id:#{user_phone_number.id}",
+          "user-phone-number.*.user-id:#{user_phone_number.user_id}",
+          "user-phone-number.*.*"
+        ]
+      )
+    end)
   end
 
   @doc """

@@ -54,6 +54,28 @@ defmodule LiveviewPubsubDemo.ContactInfoTest do
       assert user_phone_number == ContactInfo.get_user_phone_number!(user_phone_number.id)
     end
 
+    test "update_user_phone_number/2 with valid data publishes events" do
+      Phoenix.PubSub.subscribe(LiveviewPubsubDemo.PubSub, "user-phone-number.*.*")
+
+      user_phone_number = user_phone_number_fixture()
+      update_attrs = %{phone_number: "some updated phone_number"}
+
+      assert {:ok, %UserPhoneNumber{} = user_phone_number} = ContactInfo.update_user_phone_number(user_phone_number, update_attrs)
+
+      user_event = %LiveviewPubsubDemo.Events.UserEvent{
+        data: %{
+          id: user_phone_number.id,
+          phone_number: "some updated phone_number",
+          user_id: user_phone_number.user_id
+        },
+        event_at: user_phone_number.updated_at,
+        type: "user_phone_number.updated",
+        user_id: user_phone_number.user_id
+      }
+
+      assert_receive ^user_event
+    end
+
     test "delete_user_phone_number/1 deletes the user_phone_number" do
       user_phone_number = user_phone_number_fixture()
       assert {:ok, %UserPhoneNumber{}} = ContactInfo.delete_user_phone_number(user_phone_number)

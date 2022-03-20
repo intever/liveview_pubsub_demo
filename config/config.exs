@@ -10,6 +10,9 @@ import Config
 config :liveview_pubsub_demo,
   ecto_repos: [LiveviewPubsubDemo.Repo]
 
+config :liveview_pubsub_demo, LiveviewPubsubDemo.Repo,
+  migration_timestamps: [type: :utc_datetime]
+
 # Configures the endpoint
 config :liveview_pubsub_demo, LiveviewPubsubDemoWeb.Endpoint,
   url: [host: "localhost"],

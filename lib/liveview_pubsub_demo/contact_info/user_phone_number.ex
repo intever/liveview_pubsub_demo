@@ -2,6 +2,7 @@ defmodule LiveviewPubsubDemo.ContactInfo.UserPhoneNumber do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts type: :utc_datetime
   schema "user_phone_number" do
     field :phone_number, :string
 
