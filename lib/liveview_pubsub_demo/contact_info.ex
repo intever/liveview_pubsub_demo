@@ -73,7 +73,7 @@ defmodule LiveviewPubsubDemo.ContactInfo do
     result =
       Multi.new()
       |> multi_update_user_phone_number(:user_phone_number, user_phone_number, attrs)
-      |> Repo.transaction()
+      |> Repo.broadcast_transaction()
 
     case result do
       {:ok, %{user_phone_number: user_phone_number}} ->
